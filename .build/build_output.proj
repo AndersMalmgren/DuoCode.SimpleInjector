@@ -41,7 +41,7 @@
   </Target>
 
   <Target Name="GetGitVersion">
-    <VersionInfoTask RepoPath="..\"  >
+    <VersionInfoTask RepoPath="..\" Path="DuoCode.SimpleInjector"  >
       <Output PropertyName="Version" TaskParameter="Version" />
     </VersionInfoTask>
   </Target>
