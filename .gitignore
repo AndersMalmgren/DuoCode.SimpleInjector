@@ -194,3 +194,11 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+
+# Build
+NugetOutput
+Deliver
+VersionInfo.cs
+
+#Duocode
+scripts

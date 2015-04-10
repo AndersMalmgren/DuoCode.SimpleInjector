@@ -1,0 +1,1 @@
+Please see https://github.com/AndersMalmgren/DuoCode.SimpleInjector/wiki for more information on using this lib.

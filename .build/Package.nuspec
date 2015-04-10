@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DuoCode.SimpleInjector</id>
+    <version>1.0</version>
+    <authors>Anders Malmgren</authors>
+    <owners>Anders Malmgren</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/AndersMalmgren/DuoCode.SimpleInjector</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Simple Dependency Resolver for DuoCode projects</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>DuoCode C# Dependency Resolver Injector Injection IoC</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+</package>
