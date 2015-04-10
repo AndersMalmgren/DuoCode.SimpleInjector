@@ -23,6 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{544A7D
 		.build\versions.xml = .build\versions.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BDF8070D-977C-452F-A5C1-5E2CB237DCD2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuoCode.SimpleInjector.Tests", "DuoCode.SimpleInjector.Tests\DuoCode.SimpleInjector.Tests.csproj", "{E35A780A-7330-49D6-825F-ADAF9158797B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,8 +37,15 @@ Global
 		{732661B6-2A27-488A-B5B1-EA2F2D575139}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{732661B6-2A27-488A-B5B1-EA2F2D575139}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{732661B6-2A27-488A-B5B1-EA2F2D575139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E35A780A-7330-49D6-825F-ADAF9158797B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E35A780A-7330-49D6-825F-ADAF9158797B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E35A780A-7330-49D6-825F-ADAF9158797B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E35A780A-7330-49D6-825F-ADAF9158797B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E35A780A-7330-49D6-825F-ADAF9158797B} = {BDF8070D-977C-452F-A5C1-5E2CB237DCD2}
 	EndGlobalSection
 EndGlobal
