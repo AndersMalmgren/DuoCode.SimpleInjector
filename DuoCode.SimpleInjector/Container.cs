@@ -33,7 +33,7 @@ namespace DuoCode.SimpleInjector
 
         public BindingResult Bind<TSource, TTo>() where TTo : class, TSource
         {
-            return AddBinding<TSource>(new TypeInvokeStrategy<TTo>(this));
+            return AddBinding<TSource>(new TypeInvokeStrategy(typeof(TTo), this));
         }
 
         public BindingResult Bind<TSource>(TSource constant) where TSource : class
@@ -70,6 +70,9 @@ namespace DuoCode.SimpleInjector
 
         public IEnumerable GetAll(Type type)
         {
+            if (!bindings.ContainsKey(type))
+                return new[] { new TypeInvokeStrategy(type, this).Get() };
+
             return bindings[type].Select(b => b.Get());
         }
 

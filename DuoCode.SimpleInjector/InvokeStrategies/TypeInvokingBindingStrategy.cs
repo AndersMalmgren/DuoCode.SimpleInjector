@@ -4,15 +4,15 @@ using System.Linq;
 
 namespace DuoCode.SimpleInjector.InvokeStrategies
 {
-    internal class TypeInvokeStrategy<TTo> : IInvokeStrategy
+    internal class TypeInvokeStrategy : IInvokeStrategy
     {
         private readonly Type to;
         private readonly IContainer container;
         private static readonly Type enumerableType = typeof(IEnumerable<>);
         
-        public TypeInvokeStrategy(IContainer container)
+        public TypeInvokeStrategy(Type to, IContainer container)
         {
-            this.to = typeof(TTo);
+            this.to = to;
             this.container = container;
         }
         

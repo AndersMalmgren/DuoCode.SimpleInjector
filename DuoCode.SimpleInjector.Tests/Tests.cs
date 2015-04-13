@@ -28,6 +28,25 @@ namespace DuoCode.SimpleInjector.Tests
     }
 
     [Test]
+    public sealed class When_getting_a_concrete_type
+    {
+        private ISimpleClass instance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            instance = container.Get<SimpleClass>();
+        }
+
+        [TestMethod]
+        public void It_should_create_class_correctly()
+        {
+            QUnit.ok(instance != null);
+        }
+    }
+
+    [Test]
     public sealed class When_getting_a_abstract_none_bound_type
     {
         private bool exception;
@@ -218,4 +237,6 @@ namespace DuoCode.SimpleInjector.Tests
             QUnit.ok(sameInstance);
         }
     }
+
+    
 }
