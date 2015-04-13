@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using QUnitJs;
 using UnitTest;
 
@@ -92,6 +90,28 @@ namespace DuoCode.SimpleInjector.Tests
         public void It_should_create_class_correctly()
         {
             QUnit.ok(instance.SinmpleClass.Member != null);
+        }
+    }
+
+    [Test]
+    public sealed class When_getting_type_twice_with_constructor_injected_dependency_and_transient_scope
+    {
+        private bool sameInstance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container.Bind<ISimpleClass, SimpleClass>();
+            container.Bind<IDeepDepClass, DeepDepClass>();
+
+            sameInstance = container.Get<IDeepDepClass>().SinmpleClass.GetHashCode() == container.Get<IDeepDepClass>().SinmpleClass.GetHashCode();
+        }
+
+        [TestMethod]
+        public void It_should_have_created_new_objects()
+        {
+            QUnit.ok(!sameInstance);
         }
     }
 
@@ -259,6 +279,4 @@ namespace DuoCode.SimpleInjector.Tests
             QUnit.ok(sameInstance);
         }
     }
-
-    
 }

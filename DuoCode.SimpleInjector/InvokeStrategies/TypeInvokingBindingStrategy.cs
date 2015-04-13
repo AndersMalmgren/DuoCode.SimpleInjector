@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -9,9 +8,8 @@ namespace DuoCode.SimpleInjector.InvokeStrategies
     {
         private readonly Type to;
         private readonly IContainer container;
-        private static readonly Type enumerableType = typeof(IEnumerable<>);
         private ConstructorInfo constructor;
-        private object[] parameters;
+        private IInvokeStrategy[] parameterInvokers;
 
         public TypeInvokeStrategy(Type to, IContainer container)
         {
@@ -24,14 +22,14 @@ namespace DuoCode.SimpleInjector.InvokeStrategies
                 .OrderByDescending(c => c.GetParameters().Length)
                 .First();
 
-            parameters = constructor.GetParameters()
-                .Select(p => p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition().IsAssignableFrom(enumerableType) ? container.GetAll(p.ParameterType.GetGenericArguments()[0]) : container.Get(p.ParameterType))
+            parameterInvokers = constructor.GetParameters()
+                .Select(p => new ParemeterInvoker(p.ParameterType, container))
                 .ToArray();
         }
         
         public object Get()
         {
-            var instance = constructor.Invoke(parameters);
+            var instance = constructor.Invoke(parameterInvokers.Select(p => p.Get()).ToArray());
             return instance;
         }
     }
