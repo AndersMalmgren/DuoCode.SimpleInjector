@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DuoCode.Runtime;
@@ -27,11 +28,16 @@ namespace DuoCode.SimpleInjector
 })")();
         }
 
-        private readonly Dictionary<Type, Type> bindings = new Dictionary<Type, Type>();
+        private readonly Dictionary<Type, List<Type>> bindings = new Dictionary<Type, List<Type>>();
 
-        public void Bind<TInterface, TType>() where TType : class, TInterface
+        public void Bind<TSource, TTo>() where TTo : class, TSource
         {
-            bindings[typeof(TInterface)] = typeof(TType);
+            var typeSource = typeof (TSource);
+
+            if (!bindings.ContainsKey(typeSource))
+                bindings[typeSource] = new List<Type>();
+
+            bindings[typeSource].Add(typeof(TTo));
         }
 
         public T Get<T>() where T : class
@@ -39,13 +45,26 @@ namespace DuoCode.SimpleInjector
             return Get(typeof(T)) as T;
         }
 
-        public object Get(Type type)
+        public IEnumerable GetAll(Type type)
         {
-            var targetType = bindings.ContainsKey(type) ? bindings[type] : type;
+                    
+            var  targetTypes = bindings.ContainsKey(type) ? bindings[type] as IEnumerable<Type> : new[] { type };
 
-            if (targetType.IsInterface || targetType.IsAbstract) throw new Exception("Can only inject concrete none abstract types");
+            var errors = targetTypes
+                .Where(t => t.IsInterface || t.IsAbstract)
+                .Select(t => string.Format("{0}: Can only inject concrete none abstract types", t.FullName));
 
-            var constructor = targetType.GetConstructors()
+            if (errors.Any())
+            {
+                throw new Exception(string.Join(Environment.NewLine, errors));
+            }
+
+            return targetTypes.Select(Invoke);
+        }
+
+        private object Invoke(Type type)
+        {
+            var constructor = type.GetConstructors()
                 .OrderByDescending(c => c.GetParameters().Length)
                 .First();
 
@@ -55,6 +74,11 @@ namespace DuoCode.SimpleInjector
 
             var instance = constructor.Invoke(parameters);
             return instance;
+        }
+
+        public object Get(Type type)
+        {
+            return GetAll(type).Cast<object>().Single();
         }
     }
 }
