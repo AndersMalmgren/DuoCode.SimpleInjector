@@ -120,4 +120,34 @@ namespace DuoCode.SimpleInjector.Tests
             QUnit.ok(instance.SimpleClasses.Any(sc => sc.Member == "Foo"));
         }
     }
+
+    [Test]
+    public sealed class When_getting_multiple_types_as_a_single
+    {
+        private bool exception;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container.Bind<ISimpleClass, SimpleClass>();
+            container.Bind<ISimpleClass, SimpleClassTwo>();
+
+            try
+            {
+
+                container.Get<ISimpleClass>();
+            }
+            catch
+            {
+                exception = true;
+            }
+        }
+
+        [TestMethod]
+        public void It_should_fail()
+        {
+            QUnit.ok(exception);
+        }
+    }
 }
