@@ -28,6 +28,7 @@ namespace DuoCode.SimpleInjector
 })")();
         }
 
+        private static readonly Type enumerableType = typeof (IEnumerable<>);
         private readonly Dictionary<Type, List<Type>> bindings = new Dictionary<Type, List<Type>>();
 
         public void Bind<TSource, TTo>() where TTo : class, TSource
@@ -47,19 +48,21 @@ namespace DuoCode.SimpleInjector
 
         public IEnumerable GetAll(Type type)
         {
-                    
             var  targetTypes = bindings.ContainsKey(type) ? bindings[type] as IEnumerable<Type> : new[] { type };
 
             var errors = targetTypes
-                .Where(t => t.IsInterface || t.IsAbstract)
+                .Where(t => !(t.IsGenericType && t.GetGenericTypeDefinition().IsAssignableFrom(enumerableType)) && (t.IsInterface || t.IsAbstract))
                 .Select(t => string.Format("{0}: Can only inject concrete none abstract types", t.FullName));
 
             if (errors.Any())
-            {
                 throw new Exception(string.Join(Environment.NewLine, errors));
-            }
 
             return targetTypes.Select(Invoke);
+        }
+
+        public IEnumerable<T> GetAll<T>()
+        {
+            return GetAll(typeof (T)).Cast<T>();
         }
 
         private object Invoke(Type type)
@@ -69,7 +72,7 @@ namespace DuoCode.SimpleInjector
                 .First();
 
             var parameters = constructor.GetParameters()
-                .Select(p => Get(p.ParameterType))
+                .Select(p => p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition().IsAssignableFrom(enumerableType) ? GetAll(p.ParameterType.GetGenericArguments()[0]) : Get(p.ParameterType))
                 .ToArray();
 
             var instance = constructor.Invoke(parameters);

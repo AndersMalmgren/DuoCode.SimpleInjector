@@ -1,4 +1,6 @@
-﻿using QUnitJs;
+﻿using System.Collections.Generic;
+using System.Linq;
+using QUnitJs;
 using UnitTest;
 
 namespace DuoCode.SimpleInjector.Tests
@@ -66,9 +68,56 @@ namespace DuoCode.SimpleInjector.Tests
         }
 
         [TestMethod]
-        public void It_should_fail()
+        public void It_should_create_class_correctly()
         {
             QUnit.ok(instance.SinmpleClass.Member != null);
+        }
+    }
+
+    [Test]
+    public sealed class When_getting_multiple_types
+    {
+        private IEnumerable<ISimpleClass> instances;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container.Bind<ISimpleClass, SimpleClass>();
+            container.Bind<ISimpleClass, SimpleClassTwo>();
+
+            instances = container.GetAll<ISimpleClass>();
+        }
+
+        [TestMethod]
+        public void It_should_create_class_correctly()
+        {
+            QUnit.equal(2, instances.Count());
+        }
+    }
+
+    [Test]
+    public sealed class When_getting_multiple_types_with_constructor_injection
+    {
+        private IDeepClassWithCollection instance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container.Bind<ISimpleClass, SimpleClass>();
+            container.Bind<ISimpleClass, SimpleClassTwo>();
+            container.Bind<IDeepClassWithCollection, DeepClassWithCollection>();
+
+
+            instance = container.Get<IDeepClassWithCollection>();
+        }
+
+        [TestMethod]
+        public void It_should_create_class_correctly()
+        {
+            QUnit.equal(2, instance.SimpleClasses.Count());
+            QUnit.ok(instance.SimpleClasses.Any(sc => sc.Member == "Foo"));
         }
     }
 }

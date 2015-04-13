@@ -20,13 +20,9 @@ namespace DuoCode.SimpleInjector.Tests
                     Console.WriteLine(type.FullName);
 
                     var methods = type.GetMethods();
-                    
-                    
-
 
                     var setup = methods.SingleOrDefault(m => m.GetCustomAttributes(typeof (TestSetup), false).Any());
                     var tests = methods.Where(m => m.GetCustomAttributes(typeof (TestMethodAttribute), false).Any());
-
 
                     foreach (var test in tests)
                     {

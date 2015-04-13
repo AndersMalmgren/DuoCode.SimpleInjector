@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace DuoCode.SimpleInjector.Tests
 {
@@ -13,6 +10,11 @@ namespace DuoCode.SimpleInjector.Tests
     public class SimpleClass : ISimpleClass
     {
         public string Member { get { return "Foo"; } }
+    }
+
+    public class SimpleClassTwo : ISimpleClass
+    {
+        public string Member { get { return "Two"; } }
     }
 
     public interface IDeepDepClass
@@ -30,5 +32,22 @@ namespace DuoCode.SimpleInjector.Tests
         }
 
         public ISimpleClass SinmpleClass { get { return sinmpleClass; } }
+    }
+
+    public interface IDeepClassWithCollection
+    {
+        IEnumerable<ISimpleClass> SimpleClasses { get; }
+    }
+
+    public class DeepClassWithCollection : IDeepClassWithCollection
+    {
+        private readonly IEnumerable<ISimpleClass> colletion;
+
+        public DeepClassWithCollection(IEnumerable<ISimpleClass> colletion)
+        {
+            this.colletion = colletion;
+        }
+
+        public IEnumerable<ISimpleClass> SimpleClasses { get { return colletion; } }
     }
 }
