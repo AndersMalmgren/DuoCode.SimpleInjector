@@ -195,4 +195,27 @@ namespace DuoCode.SimpleInjector.Tests
             QUnit.ok(sameInstance);
         }
     }
+
+    [Test]
+    public sealed class When_getting_a_none_constant_type_in_a_singleton_scope
+    {
+        private bool sameInstance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container
+                .Bind<ISimpleClass, SimpleClass>()
+                .InSingletonScope();
+
+            sameInstance = container.Get<ISimpleClass>().GetHashCode() == container.Get<ISimpleClass>().GetHashCode();
+        }
+
+        [TestMethod]
+        public void It_should_get_same_instance_each_time()
+        {
+            QUnit.ok(sameInstance);
+        }
+    }
 }

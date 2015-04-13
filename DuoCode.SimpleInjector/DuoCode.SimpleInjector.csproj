@@ -32,11 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BindingResult.cs" />
     <Compile Include="InvokeStrategies\ConstantStrategy.cs" />
     <Compile Include="InvokeStrategies\IInvokeStrategy.cs" />
     <Compile Include="InvokeStrategies\TypeInvokingBindingStrategy.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="IContainer.cs" />
+    <Compile Include="LifetimeStrategies\SingletonStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

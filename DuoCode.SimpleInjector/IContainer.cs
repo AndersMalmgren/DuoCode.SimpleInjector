@@ -6,11 +6,12 @@ namespace DuoCode.SimpleInjector
 {
     public interface IContainer
     {
-        void Bind<TInterface, TType>() where TType : class, TInterface;
         T Get<T>() where T : class;
         IEnumerable<T> GetAll<T>() where T : class;
-
         IEnumerable GetAll(Type type);
         object Get(Type type);
+
+        BindingResult Bind<TSource, TTo>() where TTo : class, TSource;
+        BindingResult Bind<TSource>(TSource constant) where TSource : class;
     }
 }
