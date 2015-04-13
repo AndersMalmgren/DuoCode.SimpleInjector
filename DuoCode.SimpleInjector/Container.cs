@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DuoCode.Runtime;
+using DuoCode.SimpleInjector.InvokeStrategies;
 
 namespace DuoCode.SimpleInjector
 {
@@ -28,17 +29,16 @@ namespace DuoCode.SimpleInjector
 })")();
         }
 
-        private static readonly Type enumerableType = typeof (IEnumerable<>);
-        private readonly Dictionary<Type, List<Type>> bindings = new Dictionary<Type, List<Type>>();
+        private readonly Dictionary<Type, List<IInvokeStategy>> bindings = new Dictionary<Type, List<IInvokeStategy>>();
 
         public void Bind<TSource, TTo>() where TTo : class, TSource
         {
             var typeSource = typeof (TSource);
 
             if (!bindings.ContainsKey(typeSource))
-                bindings[typeSource] = new List<Type>();
+                bindings[typeSource] = new List<IInvokeStategy>();
 
-            bindings[typeSource].Add(typeof(TTo));
+            bindings[typeSource].Add(new TypeInvokeStrategy(typeof(TTo), this));
         }
 
         public T Get<T>() where T : class
@@ -46,37 +46,14 @@ namespace DuoCode.SimpleInjector
             return Get(typeof(T)) as T;
         }
 
-        public IEnumerable GetAll(Type type)
-        {
-            var  targetTypes = bindings.ContainsKey(type) ? bindings[type] as IEnumerable<Type> : new[] { type };
-
-            var errors = targetTypes
-                .Where(t => !(t.IsGenericType && t.GetGenericTypeDefinition().IsAssignableFrom(enumerableType)) && (t.IsInterface || t.IsAbstract))
-                .Select(t => string.Format("{0}: Can only inject concrete none abstract types", t.FullName));
-
-            if (errors.Any())
-                throw new Exception(string.Join(Environment.NewLine, errors));
-
-            return targetTypes.Select(Invoke);
-        }
-
-        public IEnumerable<T> GetAll<T>()
+        public IEnumerable<T> GetAll<T>() where T : class
         {
             return GetAll(typeof (T)).Cast<T>();
         }
 
-        private object Invoke(Type type)
+        public IEnumerable GetAll(Type type)
         {
-            var constructor = type.GetConstructors()
-                .OrderByDescending(c => c.GetParameters().Length)
-                .First();
-
-            var parameters = constructor.GetParameters()
-                .Select(p => p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition().IsAssignableFrom(enumerableType) ? GetAll(p.ParameterType.GetGenericArguments()[0]) : Get(p.ParameterType))
-                .ToArray();
-
-            var instance = constructor.Invoke(parameters);
-            return instance;
+            return bindings[type].Select(b => b.Get());
         }
 
         public object Get(Type type)
