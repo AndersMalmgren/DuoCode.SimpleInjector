@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using QUnitJs;
@@ -233,6 +234,27 @@ namespace DuoCode.SimpleInjector.Tests
 
         [TestMethod]
         public void It_should_get_same_instance_each_time()
+        {
+            QUnit.ok(sameInstance);
+        }
+    }
+
+    [Test]
+    public sealed class When_getting_IContainer
+    {
+        private bool sameInstance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+
+            sameInstance = container.GetHashCode() == container.Get<IContainer>().GetHashCode();
+
+        }
+
+        [TestMethod]
+        public void It_should_get_same_instance()
         {
             QUnit.ok(sameInstance);
         }

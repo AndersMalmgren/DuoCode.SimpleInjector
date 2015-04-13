@@ -31,6 +31,11 @@ namespace DuoCode.SimpleInjector
 
         private readonly Dictionary<Type, List<IInvokeStrategy>> bindings = new Dictionary<Type, List<IInvokeStrategy>>();
 
+        public Container()
+        {
+            Bind<IContainer>(this);
+        }
+
         public BindingResult Bind<TSource, TTo>() where TTo : class, TSource
         {
             return AddBinding<TSource>(new TypeInvokeStrategy(typeof(TTo), this));
