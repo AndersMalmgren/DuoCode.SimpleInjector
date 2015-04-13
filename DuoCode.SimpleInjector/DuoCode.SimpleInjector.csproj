@@ -32,7 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="InvokeStrategies\IInvokeStategy.cs" />
+    <Compile Include="InvokeStrategies\ConstantStrategy.cs" />
+    <Compile Include="InvokeStrategies\IInvokeStrategy.cs" />
     <Compile Include="InvokeStrategies\TypeInvokingBindingStrategy.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="IContainer.cs" />

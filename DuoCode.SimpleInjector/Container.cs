@@ -29,16 +29,27 @@ namespace DuoCode.SimpleInjector
 })")();
         }
 
-        private readonly Dictionary<Type, List<IInvokeStategy>> bindings = new Dictionary<Type, List<IInvokeStategy>>();
+        private readonly Dictionary<Type, List<IInvokeStrategy>> bindings = new Dictionary<Type, List<IInvokeStrategy>>();
 
         public void Bind<TSource, TTo>() where TTo : class, TSource
         {
-            var typeSource = typeof (TSource);
+            AddBinding<TSource>(new TypeInvokeStrategy<TTo>(this));
+        }
+
+        public void Bind<TSource>(TSource constant) where TSource : class
+        {
+            AddBinding<TSource>(new ConstantStrategy<TSource>(constant));
+        }
+
+
+        private void AddBinding<TSource>(IInvokeStrategy strategy)
+        {
+            var typeSource = typeof(TSource);
 
             if (!bindings.ContainsKey(typeSource))
-                bindings[typeSource] = new List<IInvokeStategy>();
+                bindings[typeSource] = new List<IInvokeStrategy>();
 
-            bindings[typeSource].Add(new TypeInvokeStrategy(typeof(TTo), this));
+            bindings[typeSource].Add(strategy);
         }
 
         public T Get<T>() where T : class

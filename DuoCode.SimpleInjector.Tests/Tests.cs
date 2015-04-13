@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using QUnitJs;
 using UnitTest;
 
@@ -148,6 +149,50 @@ namespace DuoCode.SimpleInjector.Tests
         public void It_should_fail()
         {
             QUnit.ok(exception);
+        }
+    }
+
+    [Test]
+    public sealed class When_getting_a_type_multiple_times
+    {
+        private bool sameInstance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container.Bind<ISimpleClass, SimpleClass>();
+
+
+            sameInstance = container.Get<ISimpleClass>().GetHashCode() == container.Get<ISimpleClass>().GetHashCode();
+        }
+
+        [TestMethod]
+        public void It_should_get_new_instance_each_time()
+        {
+            QUnit.ok(!sameInstance);
+        }
+    }
+
+    [Test]
+    public sealed class When_getting_a_constant_type_multiple_times
+    {
+        private bool sameInstance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container.Bind<ISimpleClass>(new SimpleClass());
+
+
+            sameInstance = container.Get<ISimpleClass>().GetHashCode() == container.Get<ISimpleClass>().GetHashCode();
+        }
+
+        [TestMethod]
+        public void It_should_get_same_instance_each_time()
+        {
+            QUnit.ok(sameInstance);
         }
     }
 }
