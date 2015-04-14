@@ -283,4 +283,48 @@ namespace DuoCode.SimpleInjector.Tests
             QUnit.ok(sameInstance);
         }
     }
+
+    [Test]
+    public sealed class When_getting_type_with_autofactory
+    {
+        private DeepClassWithAutoFactory instance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container.Bind<ISimpleClass, SimpleClass>();
+            instance = container.Get<DeepClassWithAutoFactory>();
+
+        }
+
+        [TestMethod]
+        public void It_should_inject_autofactory_correctly()
+        {
+            QUnit.equal("Foo", instance.SimpleClass.Member);
+        }
+    }
+
+    [Test]
+    public sealed class When_getting_type_with_collection_autofactory
+    {
+        private DeepClassWithCollectionAutoFactory instance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container.Bind<ISimpleClass, SimpleClass>(); 
+            container.Bind<ISimpleClass, SimpleClassTwo>();
+
+            instance = container.Get<DeepClassWithCollectionAutoFactory>();
+
+        }
+
+        [TestMethod]
+        public void It_should_inject_autofactory_correctly()
+        {
+            QUnit.equal("Foo", instance.SimpleClasses.First().Member);
+        }
+    }
 }

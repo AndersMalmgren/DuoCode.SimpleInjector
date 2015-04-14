@@ -8,6 +8,7 @@ namespace DuoCode.SimpleInjector.InvokeStrategies
         private readonly Type type;
         private Func<Type, object> invoker;
         private static readonly Type enumerableType = typeof(IEnumerable<>);
+        private static readonly Type funcType = typeof(Func<>);
 
         public ParameterInvoker(Type parameterType, IContainer container)
         {
@@ -15,6 +16,12 @@ namespace DuoCode.SimpleInjector.InvokeStrategies
             {
                 type = parameterType.GetGenericArguments()[0];
                 invoker = container.GetAll;
+            }
+            else if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition().IsAssignableFrom(funcType))
+            {
+                type = parameterType.GetGenericArguments()[0];
+                var parameterInvoker = new ParameterInvoker(type, container);
+                invoker = t => new Func<object>(parameterInvoker.Get);
             }
             else
             {

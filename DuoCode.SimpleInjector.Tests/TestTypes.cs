@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DuoCode.SimpleInjector.Tests
 {
@@ -49,5 +50,29 @@ namespace DuoCode.SimpleInjector.Tests
         }
 
         public IEnumerable<ISimpleClass> SimpleClasses { get { return colletion; } }
+    }
+
+    public class DeepClassWithAutoFactory
+    {
+        private ISimpleClass simpleClass;
+
+        public DeepClassWithAutoFactory(Func<ISimpleClass> factory)
+        {
+            simpleClass = factory();
+        }
+
+        public ISimpleClass SimpleClass { get { return simpleClass; } }
+    }
+
+    public class DeepClassWithCollectionAutoFactory
+    {
+        private IEnumerable<ISimpleClass> simpleClasses;
+
+        public DeepClassWithCollectionAutoFactory(Func<IEnumerable<ISimpleClass>> factory)
+        {
+            simpleClasses = factory();
+        }
+
+        public IEnumerable<ISimpleClass> SimpleClasses { get { return simpleClasses; } }
     }
 }
