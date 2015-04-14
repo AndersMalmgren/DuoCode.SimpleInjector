@@ -21,7 +21,7 @@ namespace DuoCode.SimpleInjector.InvokeStrategies
             {
                 type = parameterType.GetGenericArguments()[0];
                 var parameterInvoker = new ParameterInvoker(type, container);
-                invoker = t => new Func<object>(parameterInvoker.Get);
+                invoker = t => new Func<object>(parameterInvoker.Get); //Func<object> only works because the CLR is javascript;
             }
             else
             {
