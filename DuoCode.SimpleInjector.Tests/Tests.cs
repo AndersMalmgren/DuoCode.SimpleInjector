@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using QUnitJs;
 using UnitTest;
@@ -49,6 +50,7 @@ namespace DuoCode.SimpleInjector.Tests
     public sealed class When_getting_a_abstract_none_bound_type
     {
         private bool exception;
+        private string message;
 
         [TestSetup]
         public void Setup()
@@ -58,8 +60,9 @@ namespace DuoCode.SimpleInjector.Tests
             {
                 container.Get<ISimpleClass>();
             }
-            catch
+            catch(Exception e)
             {
+                message = e.Message;
                 exception = true;
             }
         }
@@ -68,6 +71,7 @@ namespace DuoCode.SimpleInjector.Tests
         public void It_should_fail()
         {
             QUnit.equal(exception, true);
+            QUnit.ok(message.Contains(typeof(ISimpleClass).FullName));
         }
     }
 
