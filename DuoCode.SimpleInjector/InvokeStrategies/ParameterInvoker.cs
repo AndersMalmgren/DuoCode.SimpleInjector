@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace DuoCode.SimpleInjector.InvokeStrategies
 {
-    internal class ParemeterInvoker : IInvokeStrategy
+    internal class ParameterInvoker : IInvokeStrategy
     {
         private readonly Type type;
         private Func<Type, object> invoker;
         private static readonly Type enumerableType = typeof(IEnumerable<>);
 
-        public ParemeterInvoker(Type parameterType, IContainer container)
+        public ParameterInvoker(Type parameterType, IContainer container)
         {
             if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition().IsAssignableFrom(enumerableType))
             {

@@ -21,7 +21,7 @@ namespace DuoCode.SimpleInjector.InvokeStrategies
                 .First();
 
             parameterInvokers = constructor.GetParameters()
-                .Select(p => new ParemeterInvoker(p.ParameterType, container))
+                .Select(p => new ParameterInvoker(p.ParameterType, container))
                 .ToArray();
         }
         
