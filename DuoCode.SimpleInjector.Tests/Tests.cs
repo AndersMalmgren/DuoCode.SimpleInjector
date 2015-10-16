@@ -327,4 +327,32 @@ namespace DuoCode.SimpleInjector.Tests
             QUnit.equal("Foo", instance.SimpleClasses.First().Member);
         }
     }
+
+    //[Test]
+    //public sealed class When_getting_many_many_instances
+    //{
+    //    private ISimpleClass instance;
+    //    private TimeSpan delta;
+
+    //    [TestSetup]
+    //    public void Setup()
+    //    {
+    //        var container = new Container();
+    //        container.Bind<ISimpleClass, SimpleClass>();
+
+    //        var start = DateTime.Now;
+    //        for(var i = 0; i < 100000; i++)
+    //        {
+    //            instance = container.Get<ISimpleClass>();
+    //        }
+    //        delta = DateTime.Now - start;
+    //    }
+
+    //    [TestMethod]
+    //    public void It_should_have_accepable_speed()
+    //    {
+    //        Console.WriteLine(delta);
+    //        QUnit.ok(true);
+    //    }
+    //}
 }

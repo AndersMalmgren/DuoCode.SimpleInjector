@@ -63,7 +63,12 @@ namespace DuoCode.SimpleInjector
 
         public object Get(Type type)
         {
-            return GetAll(type).Cast<object>().Single();
+            if(!bindings.ContainsKey(type))
+                return new TypeInvokeStrategy(type, this).Get();
+
+            if(bindings[type].Count > 1) throw new Exception(string.Format("Multiple instances registered for type: {0}", type.FullName));
+
+            return bindings[type][0].Get();
         }
     }
 }
