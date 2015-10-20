@@ -36,6 +36,7 @@
     <Compile Include="InvokeStrategies\ConstantStrategy.cs" />
     <Compile Include="InvokeStrategies\IInvokeStrategy.cs" />
     <Compile Include="InvokeStrategies\ParameterInvoker.cs" />
+    <Compile Include="InvokeStrategies\OpenGenericTypes.cs" />
     <Compile Include="InvokeStrategies\TypeInvokingBindingStrategy.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="IContainer.cs" />

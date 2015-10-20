@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DuoCode.Dom.Intl;
 
 namespace DuoCode.SimpleInjector.Tests
 {
@@ -74,5 +75,31 @@ namespace DuoCode.SimpleInjector.Tests
         }
 
         public IEnumerable<ISimpleClass> SimpleClasses { get { return simpleClasses; } }
+    }
+
+    public interface IGenericClass<TOne, TTwo>
+    {
+        TOne One { get; set; }
+        TTwo Two { get; set; }
+    }
+
+    public class GenericClass<TOne, TTwo> : IGenericClass<TOne, TTwo>
+    {
+        public TOne One { get; set; }
+        public TTwo Two { get; set; }
+    }
+
+    public class DeepClassWithCollectionOfGenericType
+    {
+        public IGenericClass<int, int> FromFactory { get; private set; }
+        public IEnumerable<IGenericClass<int, int>> Collection { get; set; }
+        public IGenericClass<int, int> Instance  {get;set;} 
+
+        public DeepClassWithCollectionOfGenericType(IGenericClass<int, int> instance, IEnumerable<IGenericClass<int, int>> collection, Func<IGenericClass<int, int>> factory)
+        {
+            Instance = instance;
+            Collection = collection;
+            FromFactory = factory();
+        }
     }
 }

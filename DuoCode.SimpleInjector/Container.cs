@@ -18,29 +18,17 @@ namespace DuoCode.SimpleInjector
 
         public BindingResult Bind<TSource, TTo>() where TTo : class, TSource
         {
-            return AddBinding<TSource>(new TypeInvokeStrategy(typeof(TTo), this));
+            return AddBinding(typeof(TSource), new TypeInvokeStrategy(typeof(TTo), this));
         }
 
         public BindingResult Bind<TSource>(TSource constant) where TSource : class
         {
-            return AddBinding<TSource>(new ConstantStrategy<TSource>(constant));
+            return AddBinding(typeof(TSource), new ConstantStrategy<TSource>(constant));
         }
 
-
-        private BindingResult AddBinding<TSource>(IInvokeStrategy invoker)
+        public BindingResult Bind(Type source, Type to)
         {
-            var typeSource = typeof(TSource);
-
-            if (!bindings.ContainsKey(typeSource))
-                bindings[typeSource] = new List<IInvokeStrategy>();
-
-            bindings[typeSource].Add(invoker);
-
-            return new BindingResult(invoker, newInvoker =>
-            {
-                bindings[typeSource].Remove(invoker);
-                bindings[typeSource].Add(newInvoker);
-            });
+            return AddBinding(source, new TypeInvokeStrategy(to, this));
         }
 
         public T Get<T>() where T : class
@@ -55,20 +43,50 @@ namespace DuoCode.SimpleInjector
 
         public IEnumerable GetAll(Type type)
         {
-            if (!bindings.ContainsKey(type))
-                return new[] { new TypeInvokeStrategy(type, this).Get() };
+            var invokers = GetBindings(type);
 
-            return bindings[type].Select(b => b.Get());
+            if(invokers == null)
+                return new[] { new TypeInvokeStrategy(type, this).Get(type) };
+
+            return invokers.Select(b => b.Get(type));
         }
 
         public object Get(Type type)
         {
-            if(!bindings.ContainsKey(type))
-                return new TypeInvokeStrategy(type, this).Get();
+            var invokers = GetBindings(type);
 
-            if(bindings[type].Count > 1) throw new Exception(string.Format("Multiple instances registered for type: {0}", type.FullName));
+            if(invokers == null)
+                return new TypeInvokeStrategy(type, this).Get(type);
 
-            return bindings[type][0].Get();
+            if(invokers.Count > 1) throw new Exception(string.Format("Multiple instances registered for type: {0}", type.FullName));
+
+            return invokers[0].Get(type);
+        }
+
+        private List<IInvokeStrategy> GetBindings(Type type)
+        {
+            if (bindings.ContainsKey(type)) return bindings[type];
+            if(OpenGenericTypes.IsUnknownOpenType(type))
+            {
+                var openType = type.GetGenericTypeDefinition();
+                if (bindings.ContainsKey(openType)) return bindings[openType];
+            }
+
+            return null;
+        }
+
+        private BindingResult AddBinding(Type typeSource, IInvokeStrategy invoker)
+        {
+            if(!bindings.ContainsKey(typeSource))
+                bindings[typeSource] = new List<IInvokeStrategy>();
+
+            bindings[typeSource].Add(invoker);
+
+            return new BindingResult(invoker, newInvoker =>
+            {
+                bindings[typeSource].Remove(invoker);
+                bindings[typeSource].Add(newInvoker);
+            });
         }
     }
 }

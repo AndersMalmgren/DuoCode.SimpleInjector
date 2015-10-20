@@ -1,7 +1,9 @@
-﻿namespace DuoCode.SimpleInjector.InvokeStrategies
+﻿using System;
+
+namespace DuoCode.SimpleInjector.InvokeStrategies
 {
     internal interface IInvokeStrategy
     {
-        object Get();
+        object Get(Type requestedType);
     }
 }

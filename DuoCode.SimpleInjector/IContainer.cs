@@ -13,5 +13,6 @@ namespace DuoCode.SimpleInjector
 
         BindingResult Bind<TSource, TTo>() where TTo : class, TSource;
         BindingResult Bind<TSource>(TSource constant) where TSource : class;
+        BindingResult Bind(Type source, Type to);
     }
 }

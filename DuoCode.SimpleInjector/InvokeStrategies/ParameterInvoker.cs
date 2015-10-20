@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DuoCode.SimpleInjector.InvokeStrategies
 {
@@ -7,21 +8,19 @@ namespace DuoCode.SimpleInjector.InvokeStrategies
     {
         private readonly Type type;
         private Func<Type, object> invoker;
-        private static readonly Type enumerableType = typeof(IEnumerable<>);
-        private static readonly Type funcType = typeof(Func<>);
 
         public ParameterInvoker(Type parameterType, IContainer container)
         {
-            if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition().IsAssignableFrom(enumerableType))
+            if (OpenGenericTypes.IsEnumerable(parameterType))
             {
                 type = parameterType.GetGenericArguments()[0];
                 invoker = container.GetAll;
             }
-            else if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition().IsAssignableFrom(funcType))
+            else if(OpenGenericTypes.IsFunc(parameterType))
             {
                 type = parameterType.GetGenericArguments()[0];
                 var parameterInvoker = new ParameterInvoker(type, container);
-                invoker = t => new Func<object>(parameterInvoker.Get); //Func<object> only works because the CLR is javascript;
+                invoker = t => new Func<object>(() => parameterInvoker.Get(t)); //Func<object> only works because the CLR is javascript;
             }
             else
             {
@@ -30,7 +29,7 @@ namespace DuoCode.SimpleInjector.InvokeStrategies
             }
         }
 
-        public object Get()
+        public object Get(Type requestedType)
         {
             return invoker(type);
         }

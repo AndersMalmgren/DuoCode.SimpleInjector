@@ -328,6 +328,29 @@ namespace DuoCode.SimpleInjector.Tests
         }
     }
 
+    [Test]
+    public sealed class When_binding_and_getting_open_generic_type
+    {
+        private DeepClassWithCollectionOfGenericType instance;
+
+        [TestSetup]
+        public void Setup()
+        {
+            var container = new Container();
+            container.Bind(typeof (IGenericClass<,>), typeof (GenericClass<,>));
+
+            instance = container.Get<DeepClassWithCollectionOfGenericType>();
+        }
+
+        [TestMethod]
+        public void It_should_create_class_correctly()
+        {
+            QUnit.ok(instance != null);
+            QUnit.ok(instance.Instance != null);
+            QUnit.ok(instance.FromFactory != null);
+        }
+    }
+
     //[Test]
     //public sealed class When_getting_many_many_instances
     //{

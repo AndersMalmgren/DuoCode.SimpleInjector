@@ -15,7 +15,7 @@ namespace DuoCode.SimpleInjector.InvokeStrategies
             this.constant = constant;
         }
 
-        public object Get()
+        public object Get(Type requested)
         {
             return constant;
         }

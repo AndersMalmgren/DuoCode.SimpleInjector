@@ -17,9 +17,9 @@ namespace DuoCode.SimpleInjector.LifetimeStrategies
             this.underlyingInvoker = underlyingInvoker;
         } 
 
-        public object Get()
+        public object Get(Type requestedType)
         {
-            return instance = instance ?? underlyingInvoker.Get();
+            return instance = instance ?? underlyingInvoker.Get(requestedType);
         }
     }
 }
